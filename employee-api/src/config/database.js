@@ -1,6 +1,6 @@
 /**
  * Arquivo: /config/database.js
- * Descrição: Arquivo responavel pelas 'connectionStrings' (Cosmos DB & PostgreSQL)
+ * Descrição: Arquivo responsável pelas 'connectionStrings' (Cosmos DB & PostgreSQL)
  * Data: 25/03/2021
  * Autor: Alexandre Munis <@AlexandreMunis>
  */
@@ -15,9 +15,9 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 })
 
-pool.on('error', (e, client) => {
-  console.log('Unexpected error on idle client', e)
-  process.exit(-1)
+pool.on('error', (err, client) => {
+  console.log('Unexpected error on idle client', err)
+  process.exit(-1);
 })
 
 pool.on('connect', () => {
