@@ -1,5 +1,5 @@
 /**
- * Arquivo: src/app.js
+ * Arquivo: app.js
  * Descrição: Arquivo responavel por fazer a conexão com o arquivo server.js
  * Data: 25/03/2021
  * Autor: Alexandre Munis <@AlexandreMunis>
