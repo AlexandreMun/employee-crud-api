@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import VueSweetAlert2 from 'vue-sweetalert2';
+// import useVuelidate from '@vuelidate/core';
 import App from './App.vue';
 import router from './router';
 
