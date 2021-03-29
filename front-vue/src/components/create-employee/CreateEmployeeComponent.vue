@@ -93,9 +93,8 @@
           <div class="form-group">
             <button
               class="btn btn-primary"
-              type="submit"
             >
-              + Employee
+              <font-awesome-icon :icon="['fas', 'user-plus']"/> Employee
             </button>
           </div>
         </form>
