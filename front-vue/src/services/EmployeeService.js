@@ -13,7 +13,7 @@ export default {
       const response = await Api().post('/employees', employee);
       return response.data;
     } catch (e) {
-      console.log(e);
+      return console.log(e);
     }
   },
 
@@ -25,7 +25,7 @@ export default {
       const response = await Api().get('/employees');
       return response.data;
     } catch (e) {
-      console.log(e);
+      return console.log(e);
     }
   },
 
@@ -37,7 +37,7 @@ export default {
       const response = await Api().get(`/employees/${id}`);
       return response.data;
     } catch (e) {
-      console.log(e);
+      return console.log(e);
     }
   },
 
@@ -49,7 +49,7 @@ export default {
       const response = await Api().put(`/employees/${id}`);
       return response.data;
     } catch (e) {
-      console.log(e);
+      return console.log(e);
     }
   },
 
@@ -61,7 +61,7 @@ export default {
       const response = await Api().delete(`/employees/${id}`);
       return response.data;
     } catch (e) {
-      console.log(e);
+      return console.log(e);
     }
   },
 

@@ -5,88 +5,99 @@
           <h3>Add Employee</h3>
       </div>
       <div class="card-body">
-        <Form
-          @submit="handleSubmitForm()"
-          :validation-schema="employee"
-          v-slot="{ errors }"
+        <form
+          v-on:submit.prevent="handleSubmitForm()"
         >
-
           <!-- INÍCIO BLOCO: Employee Name -->
           <div class="form-group">
             <label class="font-weight-bold">Employee Name</label>
-            <Field
+            <input
               type="text"
-              id="name"
-              name="name"
               class="form-control"
-              :class="{ 'is-invalid': errors.name }"
               placeholder="Type Your Name"
               v-model="employee.name"
             />
-            <span class="invalid-feedback">{{ errors.name }}</span>
+            <div class="name-alert"
+              v-if="v$.name.$error"
+            >
+              Name is required!!
+              <!-- {{ v$.name.$errors[0].$message }} -->
+            </div>
           </div>
           <!-- FIM BLOCO: Employee Name -->
 
           <!-- INÍCIO BLOCO: Job Role -->
           <div class="form-group">
             <label class="font-weight-bold">Job Role</label>
-            <Field
+            <input
               type="text"
               id="job_role"
               name="job_role"
               class="form-control"
-              :class="{ 'is-invalid': errors.job_role }"
               placeholder="Type Your Job Role"
               v-model="employee.job_role"
             />
-            <span class="invalid-feedback">{{ errors.job_role }}</span>
+            <div class="name-alert"
+              v-if="v$.job_role.$error"
+            >
+              Job Role is required!!
+            </div>
           </div>
           <!-- FIM BLOCO: Job Role -->
 
           <!-- INÍCIO BLOCO: Salary -->
           <div class="form-group">
             <label class="font-weight-bold">Salary:</label>
-            <Field
+            <input
               type="number"
               id="salary"
               name="salary"
               class="form-control"
-              :class="{ 'is-invalid': errors.salary }"
               placeholder="Type Your Salary"
               v-model="employee.salary"
             />
-            <span class="invalid-feedback">{{ errors.salary }}</span>
+            <div class="name-alert"
+              v-if="v$.salary.$error"
+            >
+              Salary is required!!
+            </div>
           </div>
           <!-- FIM BLOCO: Salary -->
 
           <!-- INÍCIO BLOCO: Birth -->
           <div class="form-group">
             <label class="font-weight-bold">Birth:</label>
-            <Field
+            <input
               type="date"
               id="birth"
               name="birth"
               class="form-control"
-              :class="{ 'is-invalid': errors.birth }"
               v-model="employee.birth"
             />
-            <span class="invalid-feedback">{{ errors.birth }}</span>
+            <div class="name-alert"
+              v-if="v$.birth.$error"
+            >
+              Birth is required!!
+            </div>
           </div>
           <!-- FIM BLOCO: Birth -->
 
           <!-- INÍCIO BLOCO: Employee Registration -->
           <div class="form-group">
             <label class="font-weight-bold">Employee Registration:</label>
-            <Field
+            <input
               type="text"
               id="employee_registration"
               name="employee_registration"
               class="form-control"
-              :class="{ 'is-invalid': errors.employee_registration }"
               placeholder="Type Your Employee Registration"
               v-model="employee.employee_registration"
             />
-            <span class="invalid-feedback">{{ errors.employee_registration }}</span>
+            <div class="name-alert"
+              v-if="v$.employee_registration.$error"
+            >
+              Employee Registration is required!!
+            </div>
           </div>
           <!-- FIM BLOCO: Employee Registration -->
 
@@ -104,32 +115,62 @@
 </template>
 <script>
 import { computed, reactive } from 'vue';
-import { Form, Field } from 'vee-validate';
-import * as Yup from 'yup';
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+import EmployeeService from '../../services/EmployeeService';
 
 export default {
-  components: {
-    Form,
-    Field,
-  },
   setup() {
-    const employee = Yup.object().shape({
-      name: Yup.string().required('Name is required'),
-      job_role: Yup.string().required('Job Role is required'),
-      salary: Yup.string().required('Salary is required'),
-      birth: Yup.string().required('Birth is required'),
-      employee_registration: Yup.string().required('Employee Registration is required'),
+    const employee = reactive({
+      name: '',
+      job_role: '',
+      salary: '',
+      birth: '',
+      employee_registration: '',
     });
 
-    const handleSubmitForm = (values) => {
-      console.log(employee.name);
-      // `Sucess ${JSON.stringify(values, null, 4)}`
-    };
+    const rules = computed(() => ({
+      name: { required },
+      job_role: { required },
+      salary: { required },
+      birth: { required },
+      employee_registration: { required },
+    }));
+
+    const v$ = useVuelidate(rules, employee);
 
     return {
       employee,
-      handleSubmitForm,
+      v$,
     };
+  },
+  methods: {
+    handleSubmitForm() {
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        this.submitNewEmployee();
+      } else {
+        console.log('Form Failed Validation!!');
+        this.employee.name.classList.toggle('name-alert');
+      }
+    },
+
+    async submitNewEmployee() {
+      try {
+        await EmployeeService.createNewEmployee(this.employee);
+        this.$router.push({
+          name: 'list',
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
 };
 </script>
+
+<style>
+  .name-alert {
+    color: rgba(230, 7, 7, 0.863);
+  }
+</style>
