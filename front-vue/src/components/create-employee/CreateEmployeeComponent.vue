@@ -103,6 +103,7 @@
 
           <div class="form-group">
             <button
+              @click="submitNewEmployee"
               class="btn btn-primary"
             >
               <font-awesome-icon :icon="['fas', 'user-plus']"/> Employee
@@ -113,6 +114,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { computed, reactive } from 'vue';
 import useVuelidate from '@vuelidate/core';
@@ -146,20 +148,29 @@ export default {
   },
   methods: {
     handleSubmitForm() {
-      this.v$.$validate();
-      if (!this.v$.$error) {
-        this.submitNewEmployee();
-      } else {
-        console.log('Form Failed Validation!!');
-        this.employee.name.classList.toggle('name-alert');
-      }
     },
 
     async submitNewEmployee() {
       try {
+        this.v$.$validate();
+        if (this.v$.$error) {
+          // console.log('Form Failed Validation!!');
+          this.$swal('Oops!', 'You need to include all the required fields!', 'error');
+          return;
+        }
+
         await EmployeeService.createNewEmployee(this.employee);
-        this.$router.push({
-          name: 'list',
+        this.$swal({
+          title: 'Employee added successfully!',
+          icon: 'success',
+          showConfirmButton: true,
+          allowOutsideClick: false,
+          allowEnterKey: true,
+          allowEscapeKey: false,
+        }).then((data) => {
+          this.$router.push({
+            name: 'list',
+          });
         });
       } catch (e) {
         console.log(e);
